@@ -188,3 +188,52 @@ WHERE customer_id IN (
 
 
 
+-- Use Subqueries in DML Statements
+
+
+
+ALTER TABLE customer
+ADD COLUMN loyalty_member BOOLEAN DEFAULT FALSE;
+
+SELECT *
+FROM customer;
+
+
+-- Set all customers who have made 25 or more rentals a loyalty member 
+-- Step 1. Find all of the customer who have made more than 25 rentals
+
+SELECT customer_id, COUNT(*) AS number_of_rentals
+FROM rental
+GROUP BY customer_id
+HAVING COUNT(*) >= 25;
+
+
+-- Step 2. Update the customer table and set loyalty_member = True if the customer is in the list of customer over 25 rentals
+UPDATE customer 
+SET loyalty_member = TRUE 
+WHERE customer_id IN (
+	SELECT customer_id
+	FROM rental
+	GROUP BY customer_id
+	HAVING COUNT(*) >= 25
+);
+
+SELECT first_name, last_name, loyalty_member
+FROM customer
+ORDER BY customer_id;
+
+
+-- Joins AND Subqueries
+SELECT c.customer_id, first_name, last_name, rental_id, rental_date
+FROM customer c 
+JOIN rental r 
+ON c.customer_id = r.customer_id
+WHERE c.customer_id IN ( 
+	SELECT customer_id
+	FROM rental
+	GROUP BY customer_id
+	HAVING COUNT(*) >= 25
+)
+ORDER BY customer_id;
+
+
