@@ -109,6 +109,9 @@ SELECT *
 FROM customers_in_country('United States')
 WHERE district = 'Illinois';
 
+SELECT *
+FROM customers_in_country('Argentina');
+
 
 -- Delete a function - DROP FUNCTION function_name
 DROP FUNCTION IF EXISTS get_actor_count;
